@@ -34,6 +34,33 @@ Stored neighbor cell indices as integers at initialization (`procheCell()`), eli
 
 ---
 
+## 🏗️ Architecture Highlights
+
+### **1D Vector Representation of 2D Grid**
+- Stored spatial grid as `std::vector<Cellule>` with direct indexing
+- Formula: `m_maillage[i*m_ncLong + j]` for O(1) access
+- Improved cache locality vs 2D array structures
+
+### **Dynamic Particle Tracking**
+- Real-time cell reassignment system (`actualisationParticules()`)
+- Iterator-based transfers prevent invalidation during migration
+- Efficient particle movement between cells
+
+### **3×3 Neighborhood Optimization**
+- Pre-computed 9-cell neighborhood checking (`procheCell()`)
+- Only checks relevant cells instead of all particles
+- Reduces force calculations by ~99% for sparse distributions
+
+### **Self-Reference Elimination**
+- Pointer comparison (`if (this == &collect[k])`) to skip self-interaction
+- Avoids unnecessary force calculations
+
+### **Operator Overloading**
+- Clean API with overloaded operators (`+`, `-`, `*`, `^`)
+- Readable physics code with zero-overhead abstractions
+
+---
+
 ## 🧮 Mathematical & Algorithmic Optimizations
 
 ### **Spatial Partitioning**
@@ -79,33 +106,6 @@ Integer-only 2D→1D coordinate conversion algorithm (`tradCoordCellule()`) usin
 ```cpp
 int index = j * m_ncLong + i;  // Pure integer math
 ```
-
----
-
-## 🏗️ Architecture Highlights
-
-### **1D Vector Representation of 2D Grid**
-- Stored spatial grid as `std::vector<Cellule>` with direct indexing
-- Formula: `m_maillage[i*m_ncLong + j]` for O(1) access
-- Improved cache locality vs 2D array structures
-
-### **Dynamic Particle Tracking**
-- Real-time cell reassignment system (`actualisationParticules()`)
-- Iterator-based transfers prevent invalidation during migration
-- Efficient particle movement between cells
-
-### **3×3 Neighborhood Optimization**
-- Pre-computed 9-cell neighborhood checking (`procheCell()`)
-- Only checks relevant cells instead of all particles
-- Reduces force calculations by ~99% for sparse distributions
-
-### **Self-Reference Elimination**
-- Pointer comparison (`if (this == &collect[k])`) to skip self-interaction
-- Avoids unnecessary force calculations
-
-### **Operator Overloading**
-- Clean API with overloaded operators (`+`, `-`, `*`, `^`)
-- Readable physics code with zero-overhead abstractions
 
 ---
 
@@ -167,5 +167,6 @@ valgrind ./[executable]
 - **hadrienmarc** - 2023
 
 ---
+
 
 
